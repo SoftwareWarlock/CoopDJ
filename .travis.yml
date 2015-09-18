@@ -3,12 +3,24 @@ android:
   components:
     - build-tools-21.1.1
     - android-21
-before_install:
-- wget http://www.scala-lang.org/files/archive/scala-2.11.2.deb
-- sudo dpkg -i scala-2.11.2.deb
-- echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-- sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
-- sudo apt-get update
-- sudo apt-get install scala sbt
+
+#before_install:
+#- wget http://www.scala-lang.org/files/archive/scala-2.11.2.deb
+#- sudo dpkg -i scala-2.11.2.deb
+#- echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+#- sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
+#- sudo apt-get update
+#- sudo apt-get install scala sbt
+
+sudo: false
+cache:
+- apt
+
+addons:
+  apt:
+    packages:
+    - scala
+    - sbt
+
 install: android update project -p /home/travis/build/emptyflash/CoopDJ
 script: "sbt test"
