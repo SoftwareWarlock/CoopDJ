@@ -15,8 +15,9 @@ proguardOptions in Android ++= Seq("-dontobfuscate", "-dontoptimize", "-keepattr
 )
 
 libraryDependencies += "org.scaloid" %% "scaloid" % "4.0"
-// localAars in Android += baseDirectory.value / "lib" / "spotify-auth-1.0.0-beta10.aar"
-// localAars in Android += baseDirectory.value / "lib" / "spotify-player-1.0.0-beta10.aar"
+
+localAars in Android += baseDirectory.value / "lib" / "spotify-auth-1.0.0-beta10.aar"
+localAars in Android += baseDirectory.value / "lib" / "spotify-player-1.0.0-beta10.aar"
 resolvers += "jitpack" at "https://jitpack.io"
 libraryDependencies += "com.github.kaaes" % "spotify-web-api-android" % "b0a4c2dad3"
 

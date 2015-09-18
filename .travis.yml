@@ -3,7 +3,6 @@ android:
   components:
     - build-tools-21.1.1
     - android-21
-    - extra
 before_install:
 - wget http://www.scala-lang.org/files/archive/scala-2.11.2.deb
 - sudo dpkg -i scala-2.11.2.deb
