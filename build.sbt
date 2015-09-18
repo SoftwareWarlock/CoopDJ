@@ -21,6 +21,9 @@ localAars in Android += baseDirectory.value / "lib" / "spotify-player-1.0.0-beta
 resolvers += "jitpack" at "https://jitpack.io"
 libraryDependencies += "com.github.kaaes" % "spotify-web-api-android" % "b0a4c2dad3"
 
+libraryDependencies += "com.twitter" % "hbc-core" % "2.2.0"
+libraryDependencies += "com.twitter" % "hbc-twitter4j" % "2.2.0"
+
 run <<= run in Android
 install <<= install in Android
 
