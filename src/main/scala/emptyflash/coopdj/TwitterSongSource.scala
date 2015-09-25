@@ -3,27 +3,27 @@ package emptyflash.coopdj
 import collection.JavaConversions._
 import collection.Seq
 
-import com.twitter.hbc.ClientBuilder;
-import com.twitter.hbc.core.Constants;
-import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
-import com.twitter.hbc.core.processor.StringDelimitedProcessor;
-import com.twitter.hbc.httpclient.BasicClient;
-import com.twitter.hbc.httpclient.auth.Authentication;
-import com.twitter.hbc.httpclient.auth.OAuth1;
-import com.twitter.hbc.twitter4j.Twitter4jStatusClient;
-import com.twitter.hbc.twitter4j.handler.StatusStreamHandler;
-import com.twitter.hbc.twitter4j.message.DisconnectMessage;
+import com.twitter.hbc.ClientBuilder
+import com.twitter.hbc.core.Constants
+import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint
+import com.twitter.hbc.core.processor.StringDelimitedProcessor
+import com.twitter.hbc.httpclient.BasicClient
+import com.twitter.hbc.httpclient.auth.Authentication
+import com.twitter.hbc.httpclient.auth.OAuth1
+import com.twitter.hbc.twitter4j.Twitter4jStatusClient
+import com.twitter.hbc.twitter4j.handler.StatusStreamHandler
+import com.twitter.hbc.twitter4j.message.DisconnectMessage
 
-import com.twitter.hbc.twitter4j.message.StallWarningMessage;
-import twitter4j.StallWarning;
-import twitter4j.Status;
-import twitter4j.StatusDeletionNotice;
-import twitter4j.StatusListener;
+import com.twitter.hbc.twitter4j.message.StallWarningMessage
+import twitter4j.StallWarning
+import twitter4j.Status
+import twitter4j.StatusDeletionNotice
+import twitter4j.StatusListener
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.LinkedBlockingQueue
 
 class TwitterSongSource(sourceHashtag: String) extends SongSource {
   var callbackFunctions: List[String => Unit] = List()
@@ -55,7 +55,6 @@ class TwitterSongSource(sourceHashtag: String) extends SongSource {
     lazy val accessToken = TwitterSettings.ACCESS_TOKEN
     lazy val accessTokenSecret = TwitterSettings.ACCESS_TOKEN_SECRET
     val auth: Authentication = new OAuth1(consumerKey, consumerSecret, accessToken, accessTokenSecret)
-
 
     client = new ClientBuilder()
       .hosts(Constants.STREAM_HOST)

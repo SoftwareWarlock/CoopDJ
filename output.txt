@@ -1,0 +1,68 @@
+[info] Loading project definition from C:\Users\EmptyFlash\Documents\CoopDJ\project
+[info] Set current project to CoopDJ (in build file:/C:/Users/EmptyFlash/Documents/CoopDJ/)
+[warn] Detected an ant-style project layout in coopdj;
+[warn]   this format has been deprecated in favor of modern layouts
+[warn]   If this is what you want, set 'antLayoutDetector in Android := ()'
+[info] Processing resources
+[warn] UPDATE: A newer android-sdk-plugin is available: 1.4.14, currently running: 1.4.12
+[info] classes.proguard.jar is up-to-date
+[info] Creating proguard cache: proguard-cache-95b2a40cb801526995aae7b9ebcad1305a67f944.jar
+[info] Generating dex, incremental=false, multidex=false
+warning: Ignoring InnerClasses attribute for an anonymous inner class
+(org.apache.commons.logging.LogFactory$1) that doesn't come with an
+associated EnclosingMethod attribute. This class was probably produced by a
+compiler that did not target the modern .class file format. The recommended
+solution is to recompile the class from source, using an up-to-date compiler
+and without specifying any "-target" type options. The consequence of ignoring
+this warning is that reflective operations on this class will incorrectly
+indicate that it is *not* an inner class.
+warning: Ignoring InnerClasses attribute for an anonymous inner class
+(org.apache.commons.logging.LogFactory$5) that doesn't come with an
+associated EnclosingMethod attribute. This class was probably produced by a
+compiler that did not target the modern .class file format. The recommended
+solution is to recompile the class from source, using an up-to-date compiler
+and without specifying any "-target" type options. The consequence of ignoring
+this warning is that reflective operations on this class will incorrectly
+indicate that it is *not* an inner class.
+warning: Ignoring InnerClasses attribute for an anonymous inner class
+(org.apache.commons.logging.LogFactory$6) that doesn't come with an
+associated EnclosingMethod attribute. This class was probably produced by a
+compiler that did not target the modern .class file format. The recommended
+solution is to recompile the class from source, using an up-to-date compiler
+and without specifying any "-target" type options. The consequence of ignoring
+this warning is that reflective operations on this class will incorrectly
+indicate that it is *not* an inner class.
+warning: Ignoring InnerClasses attribute for an anonymous inner class
+(org.apache.commons.logging.LogFactory$2) that doesn't come with an
+associated EnclosingMethod attribute. This class was probably produced by a
+compiler that did not target the modern .class file format. The recommended
+solution is to recompile the class from source, using an up-to-date compiler
+and without specifying any "-target" type options. The consequence of ignoring
+this warning is that reflective operations on this class will incorrectly
+indicate that it is *not* an inner class.
+warning: Ignoring InnerClasses attribute for an anonymous inner class
+(org.apache.commons.logging.LogFactory$3) that doesn't come with an
+associated EnclosingMethod attribute. This class was probably produced by a
+compiler that did not target the modern .class file format. The recommended
+solution is to recompile the class from source, using an up-to-date compiler
+and without specifying any "-target" type options. The consequence of ignoring
+this warning is that reflective operations on this class will incorrectly
+indicate that it is *not* an inner class.
+warning: Ignoring InnerClasses attribute for an anonymous inner class
+(org.apache.commons.logging.LogFactory$4) that doesn't come with an
+associated EnclosingMethod attribute. This class was probably produced by a
+compiler that did not target the modern .class file format. The recommended
+solution is to recompile the class from source, using an up-to-date compiler
+and without specifying any "-target" type options. The consequence of ignoring
+this warning is that reflective operations on this class will incorrectly
+indicate that it is *not* an inner class.
+[info] dex method count: 11467
+[info] Packaged: CoopDJ-debug-unaligned.apk (2.28MB)
+[info] Debug package does not need signing: CoopDJ-debug-unaligned.apk
+[info] zipaligned: CoopDJ-debug.apk
+[info] Installing to Nexus 5 (019f03ed08e40e05)...
+[info] [CoopDJ-debug.apk] Install finished: 2.28MB in 5.69s. 410.11KB/s
+[info] Running on Nexus 5 (019f03ed08e40e05)...
+[info] Starting: Intent { cmp=emptyflash.coopdj/.SpotifyLoginActivity }
+[success] Total time: 16 s, completed Sep 18, 2015 4:57:20 PM
+Java HotSpot(TM) Client VM warning: ignoring option MaxPermSize=256m; support was removed in 8.0
