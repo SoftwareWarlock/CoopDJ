@@ -28,7 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue
 class TwitterSongSource(sourceHashtag: String) extends SongSource {
   var callbackFunctions: List[String => Unit] = List()
   val twitterSongSource = this
-  var client: BasicClient = null
+  var clientOption: Option[BasicClient]= None
 
   val listener: StatusListener = new StatusStreamHandler {
     override def onStatus(status: Status) = {
@@ -46,41 +46,38 @@ class TwitterSongSource(sourceHashtag: String) extends SongSource {
   }
   
   def startSource() = {
-    val queue: BlockingQueue[String] = new LinkedBlockingQueue[String](10000)
-    val endpoint: StatusesFilterEndpoint = new StatusesFilterEndpoint()
+    val queue = new LinkedBlockingQueue[String](10000)
+    val endpoint = new StatusesFilterEndpoint()
     endpoint.trackTerms(Seq(sourceHashtag))
 
-    lazy val consumerKey = TwitterSettings.CONSUMER_KEY
-    lazy val consumerSecret = TwitterSettings.CONSUMER_SECRET
-    lazy val accessToken = TwitterSettings.ACCESS_TOKEN
-    lazy val accessTokenSecret = TwitterSettings.ACCESS_TOKEN_SECRET
-    val auth: Authentication = new OAuth1(consumerKey, consumerSecret, accessToken, accessTokenSecret)
+    val consumerKey = TwitterSettings.CONSUMER_KEY
+    val consumerSecret = TwitterSettings.CONSUMER_SECRET
+    val accessToken = TwitterSettings.ACCESS_TOKEN
+    val accessTokenSecret = TwitterSettings.ACCESS_TOKEN_SECRET
+    val auth = new OAuth1(consumerKey, consumerSecret, accessToken, accessTokenSecret)
 
-    client = new ClientBuilder()
+    val client = new ClientBuilder()
       .hosts(Constants.STREAM_HOST)
       .endpoint(endpoint)
       .authentication(auth)
       .processor(new StringDelimitedProcessor(queue))
       .build()
+    clientOption = Some(client)
     
-    lazy val numberOfThreads = 4
-    val service: ExecutorService = Executors.newFixedThreadPool(numberOfThreads)
+    val numberOfThreads = 4
+    val service = Executors.newFixedThreadPool(numberOfThreads)
 
-    val t4jClient: Twitter4jStatusClient = new Twitter4jStatusClient(client, queue, Seq(listener), service)
+    val t4jClient = new Twitter4jStatusClient(client, queue, Seq(listener), service)
     t4jClient.connect()
-    1 to numberOfThreads foreach((i: Int) => {
-      t4jClient.process()
-    })
+    (1 to numberOfThreads) foreach(index => t4jClient.process())
   }
 
   def stopSource() = {
-    client.stop()
+    clientOption.map(client => client.stop())
   }
 
   def applyMessageToCallbacks(callbacks: List[String => Unit], message: String): Unit = {
-    callbacks foreach {
-      _.apply(message)
-    }
+    callbacks foreach(_.apply(message))
   }
 
   def onSongSourceUpdated(callback: String => Unit) = {

@@ -40,7 +40,7 @@ class TwitterSongSourceSpec extends FlatSpec with MockFactory {
   "startSource" should "set the client to the newly created client" in {
     lazy val songSource = new TwitterSongSource("#test")
     songSource.startSource()
-    assert(songSource.client != null)
+    assert(songSource.clientOption != None)
     songSource.stopSource()
   }
 }

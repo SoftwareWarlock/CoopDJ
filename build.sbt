@@ -47,11 +47,11 @@ libraryDependencies += "org.scaloid" %% "scaloid" % "4.0"
 localAars in Android += baseDirectory.value / "lib" / "spotify-auth-1.0.0-beta10.aar"
 localAars in Android += baseDirectory.value / "lib" / "spotify-player-1.0.0-beta10.aar"
 resolvers += "jitpack" at "https://jitpack.io"
-libraryDependencies += "com.github.kaaes" % "spotify-web-api-android" % "b0a4c2dad3"
+libraryDependencies += "com.github.kaaes" % "spotify-web-api-android" % "9df5689fd0"
 
-libraryDependencies += "com.github.emptyflash" % "hbc" % "hbc-2.2.2"
-libraryDependencies += "com.github.emptyflash.hbc" % "hbc-twitter4j" % "hbc-2.2.2"
-libraryDependencies += "com.github.emptyflash.hbc" % "hbc-core" % "hbc-2.2.2"
+libraryDependencies += "com.github.SoftwareWarlock" % "hbc" % "hbc-2.2.3"
+libraryDependencies += "com.github.SoftwareWarlock.hbc" % "hbc-twitter4j" % "hbc-2.2.3"
+libraryDependencies += "com.github.SoftwareWarlock.hbc" % "hbc-core" % "hbc-2.2.3"
 
 proguardOptions in Android ++= Seq("-dontobfuscate", "-dontoptimize", "-printseeds target/seeds.txt", "-printusage target/usage.txt",
 	"-dontwarn scala.collection.**", // required from Scala 2.11.4
