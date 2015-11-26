@@ -7,7 +7,8 @@ import android.content.Intent
 
 class SpotifyPlayerActivity extends SActivity {
   def getMessageWithoutHashtag(message: String, hashtag: String) = {
-    message.replace(hashtag + " ", "")
+    val hashtagWithSpace = hashtag + " "
+    message.replace(hashtagWithSpace, "")
   }
 
   def setupMediaControlUI(player: QueuedPlayer) {
@@ -20,13 +21,11 @@ class SpotifyPlayerActivity extends SActivity {
   }
 
   def beginPlayingTweetedSongs(hashtag: String, player: QueuedPlayer) = {
-    val songSource: SongSource = new TwitterSongSource(hashtag)
-    songSource.onSongSourceUpdated((message: String) => {
+    val songSource = TwitterSongSource.startSongSource(hashtag, message => {
       val tweetedSong = getMessageWithoutHashtag(message, hashtag)
       player.addSongToQueue(tweetedSong)
     })
-    songSource.startSource()
-    onDestroy(songSource.stopSource())
+    onDestroy(TwitterSongSource.stopSongSource(songSource))
     setupMediaControlUI(player)
   }
 
@@ -37,9 +36,9 @@ class SpotifyPlayerActivity extends SActivity {
   }
 
   onCreate {
-    lazy val intent = getIntent()
-    lazy val token = intent.getExtras().getString("token")
-    lazy val hashtag = intent.getExtras().getString("hashtag")
+    val intent = getIntent()
+    val token = intent.getExtras().getString("token")
+    val hashtag = intent.getExtras().getString("hashtag")
     initializeQueuedPlayer(token, beginPlayingTweetedSongs(hashtag, _))
   }
 
