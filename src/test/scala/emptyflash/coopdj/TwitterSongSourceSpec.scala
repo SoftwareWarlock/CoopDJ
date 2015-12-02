@@ -4,14 +4,15 @@ import org.scalatest.FlatSpec
 import org.scalamock.scalatest.MockFactory
 
 class TwitterSongSourceSpec extends FlatSpec with MockFactory {
+  "startSongSource" should "return an instance of StartedTwitterSongSource" in {
+    val startedSongSource = TwitterSongSource.startSongSource("#test", tweetText => {})
+    assert(startedSongSource.getClass() == classOf[StartedTwitterSongSource])
+  }
 
-  //  "An empty Set" should "have size 0" in {
-  //    assert(Set.empty.size == 0)
-  //  }
-  "createSongSource" should "return an instance of StartedTwitterSongSource" in {
-    TwitterSongSource.startSongSource("#test", tweetText => {
-      assert(tweetText == "test tweet")
-    })
+  "stopSongSource" should "take an instance of StartedTwitterSongSource and return an instance of StoppedTwitterSongSource" in {
+    val startedSongSource = TwitterSongSource.startSongSource("#test", tweetText => {})
+    val stoppedSongSource = TwitterSongSource.stopSongSource(startedSongSource)
+    assert(stoppedSongSource.getClass() == classOf[StoppedSongSource])
   }
 
 }

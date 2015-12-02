@@ -14,9 +14,9 @@ class SpotifyLoginActivity extends SActivity {
   lazy val hashtagEditText = new SEditText() hint "#MyAwesomeParty" selectAllOnFocus true
 
   def openSpotifyAuthenticationLoginActivity() = {
-    lazy val builder = new AuthenticationRequest.Builder(SpotifySettings.CLIENT_ID, AuthenticationResponse.Type.TOKEN, SpotifySettings.REDIRECT_URL)
+    val builder = new AuthenticationRequest.Builder(SpotifySettings.CLIENT_ID, AuthenticationResponse.Type.TOKEN, SpotifySettings.REDIRECT_URL)
     builder setScopes Array[String]("streaming")
-    lazy val request = builder.build()
+    val request = builder.build()
     AuthenticationClient.openLoginActivity(this, SpotifySettings.REQUEST_CODE, request)
   }
 
