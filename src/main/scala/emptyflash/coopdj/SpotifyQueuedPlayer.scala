@@ -1,5 +1,9 @@
 package emptyflash.coopdj
 
+import scala.concurrent.{ Future, Promise }
+import scala.util.{ Success, Failure }
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import android.content.Context
 import org.scaloid.common._
 
@@ -19,52 +23,84 @@ import kaaes.spotify.webapi.android.SpotifyError
 import retrofit.RetrofitError
 import retrofit.client.Response
 
-class SpotifyQueuedPlayer(token: String)(implicit context: Context) extends QueuedPlayer with PlayerNotificationCallback with ConnectionStateCallback {
-  var spotifyPlayer: Player = null
-  var spotifyService: SpotifyService = null
-  var isPlaying: Boolean = false
+trait QueuedPlayer {
+  def initializePlayer(finishedCallback: QueuedPlayer => Unit)
+  def play()
+  def pause()
+  def togglePlaying()
+  def addSongToQueue(song: String)
+  def nextSong()
+  def previousSong()
+  def clearQueue()
+  def destroyPlayer()
+}
+
+object SpotifyQueuedPlayer { 
+  def getSpotifyPlayer(token: String)(implicit context: Context): Future[Player] = {
+    val config = new Config(context, token, SpotifySettings.CLIENT_ID)
+    config.useCache(false)
+    val playerPromise = Promise[Player]()
+    val self = this
+    Spotify.getPlayer(config, this, new Player.InitializationObserver() {
+      override def onInitialized(player: Player) = {
+        player.addConnectionStateCallback(self)
+        player.addPlayerNotificationCallback(self)
+        playerPromise.success(player)
+      }
+
+      override def onError(thorwable: Throwable) = {
+      }
+    })
+    playerPromise.future
+  }
+
+  def initializeQueuedPlayer(token: String)(implicit context: Context): Future[QueuedPlayer]  = {
+    val spotifyPlayerFuture = getSpotifyPlayer(token)
+    val queuedPlayerPromise = Promise[QueuedPlayer]()
+    spotifyPlayerFuture.onComplete {
+      case Success(spotifyPlayer) => {
+        val api = new SpotifyApi()
+        api.setAccessToken(token)
+        val spotifyService = api.getService()
+        queuedPlayerPromise.success(new SpotifyQueuedPlayer(spotifyPlayer, spotifyService))
+      }
+      case Failure(exception) => queuedPlayerPromise.failure(exception)
+    }
+
+    queuedPlayerPromise.future
+  }
+}
+
+class SpotifyQueuedPlayer(spotifyPlayer: Player, spotifyService: SpotifyService)(implicit context: Context) extends QueuedPlayer with PlayerNotificationCallback with ConnectionStateCallback {
+  var isPlaying = false
   var hasSongsInQueue = false
 
-  def initializePlayer(finishedCallback: QueuedPlayer => Unit) = {
-    lazy val config = new Config(context, token, SpotifySettings.CLIENT_ID)
-    config.useCache(false)
-    spotifyPlayer = Spotify.getPlayer(config, this, new Player.InitializationObserver() {
-      override def onInitialized(player: Player) {
-        player.addConnectionStateCallback(SpotifyQueuedPlayer.this)
-        player.addPlayerNotificationCallback(SpotifyQueuedPlayer.this)
-        finishedCallback(SpotifyQueuedPlayer.this)
-      }
-
-      override def onError(thorwable: Throwable) {
-      }
-    })
-
-    lazy val api = new SpotifyApi()
-    api.setAccessToken(token)
-    spotifyService = api.getService()
-  }
-
-  def searchForSongAndQueueFirst(song: String) {
+  def searchForSong(song: String): Future[String] = {
+    val songPromise = Promise[String]()
     spotifyService.searchTracks(song, new SpotifyCallback[TracksPager] {
       override def success(tracksPage: TracksPager, response: Response) = {
-        playOrQueueSong("spotify:track:" + tracksPage.tracks.items.get(0).id)
-        toast(tracksPage.tracks.items.get(0).id)
+        val songId = "spotify:track:" + tracksPage.tracks.items.get(0).id
+        songPromise.success(songId)
+        toast(songId)
       }
       override def failure(error: SpotifyError) {
+        songPromise.failure(error)
       }
     })
+    songPromise.future
   }
 
-  def playOrQueueSong(songId: String) {
+  def playOrQueueSong(songId: String): Future[String] = {
     if (!hasSongsInQueue) {
       spotifyPlayer.play(songId)
       hasSongsInQueue = true
     }
     else spotifyPlayer.queue(songId)
+    Future[String](songId)
   }
 
   def addSongToQueue(song: String) {
-    if (song contains "spotify:track:") playOrQueueSong(song) else searchForSongAndQueueFirst(song)
+    if (song contains "spotify:track:") playOrQueueSong(song) else searchForSong(song).flatMap(songId => playOrQueueSong(songId))
   }
 
   def nextSong = {

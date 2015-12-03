@@ -1,12 +1,15 @@
 package emptyflash.coopdj
 
+import scala.concurrent.{ Future, Promise }
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import org.scaloid.common._
 
 import android.util.Log
 import android.content.Intent
 
 class SpotifyPlayerActivity extends SActivity {
-  def getMessageWithoutHashtag(message: String, hashtag: String) = {
+  def getMessageWithoutHashtag(message: String, hashtag: String): String = {
     val hashtagWithSpace = hashtag + " "
     message.replace(hashtagWithSpace, "")
   }
@@ -29,17 +32,15 @@ class SpotifyPlayerActivity extends SActivity {
     setupMediaControlUI(player)
   }
 
-  def initializeQueuedPlayer(token: String, finishedCallback: QueuedPlayer => Unit) = {
-    val queuedPlayer: QueuedPlayer = new SpotifyQueuedPlayer(token)
-    queuedPlayer.initializePlayer(finishedCallback)
-    onDestroy(queuedPlayer)
-  }
-
   onCreate {
     val intent = getIntent()
     val token = intent.getExtras().getString("token")
     val hashtag = intent.getExtras().getString("hashtag")
-    initializeQueuedPlayer(token, beginPlayingTweetedSongs(hashtag, _))
+    val queuedPlayerFuture: Future[QueuedPlayer] = SpotifyQueuedPlayer.initializeQueuedPlayer(token)
+    queuedPlayerFuture.map(queuedPlayer => {
+      beginPlayingTweetedSongs(hashtag, queuedPlayer)
+      onDestroy(queuedPlayer.destroyPlayer())
+    })
   }
 
 }
